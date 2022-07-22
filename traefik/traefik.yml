@@ -1,0 +1,53 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false  # true by default
+
+api:
+  insecure: false
+
+    # Log information
+# ---
+log:
+  level: ERROR # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: common  # common, json, logfmt
+  filePath: /var/log/traefik/traefik.log
+
+# Accesslog
+# ---
+accesslog:
+  format: common  # common, json, logfmt
+  filePath: /var/log/traefik/access.log
+
+
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entrypoint:
+          to: https
+          scheme: https
+          permanent: true
+  https:
+    address: ":443"
+  traefik:
+    address: ":8080"
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: adrien.guillement@gmail.com
+      storage: acme.json
+      caServer: "https://acme-v02.api.letsencrypt.org/directory"
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+
+providers:
+  docker:
+    exposedByDefault: false
+
+log:
+  level: DEBUG
