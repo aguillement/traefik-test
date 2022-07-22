@@ -1,0 +1,39 @@
+---
+version: "3.3"
+services:
+  app:
+    environment:
+      - ALLOWED_HOSTS='*'
+      - DATABASE_URL=postgres://silverstrike:secretpass@database/silverstrikedb
+      - SECRET_KEY=PLprXpLzxemgLD57GPAA84SBZdLVKFYg
+    image: simhnna/silverstrike
+    links:
+      - database:database
+    labels:
+      traefik.enable: true
+      traefik.http.routers.silverstrike.rule: Host(`euro.aguillement.fr`)
+      traefik.http.routers.silverstrike.entrypoints: https, http
+      traefik.http.services.silverstrike.loadbalancer.server.port: 8000
+      traefik.docker.network: web
+      traefik.http.routers.silverstrike.tls: true
+      traefik.http.routers.silverstrike.tls.certresolver: cloudflare
+    networks:
+      - web
+      - internal
+  database:
+    environment:
+      POSTGRES_DB: silverstrikedb
+      POSTGRES_USER: silverstrike
+      POSTGRES_PASSWORD: secretpass
+    image: postgres:10.3
+    volumes:
+      - ./silverstrikedb:/var/lib/postgresql/data
+    networks:
+      - internal
+
+networks:
+  web:
+    external:
+      name: web
+  internal:
+    driver: bridge
