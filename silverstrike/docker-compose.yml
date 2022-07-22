@@ -5,7 +5,7 @@ services:
     environment:
       - ALLOWED_HOSTS='*'
       - DATABASE_URL=postgres://silverstrike:secretpass@database/silverstrikedb
-      - SECRET_KEY=PLprXpLzxemgLD57GPAA84SBZdLVKFYg
+      - SECRET_KEY=REPLACEME
     image: simhnna/silverstrike
     links:
       - database:database
